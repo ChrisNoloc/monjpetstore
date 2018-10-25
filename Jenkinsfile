@@ -8,7 +8,7 @@ pipeline {
     }
     stage('Build Maven') {
       steps {
-        bat(script: 'runmaven', encoding: 'UTF-8')
+        bat(script: 'runmaven.bat /run', encoding: 'UTF-8')
       }
     }
   }
