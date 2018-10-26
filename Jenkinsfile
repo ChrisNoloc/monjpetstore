@@ -13,23 +13,16 @@ pipeline {
     }
     stage('qualimetrie') {
       steps {
-        bat(script: 'runmaven.bat', encoding: 'UTF-8')
+        bat(script: 'runqualimetrie.bat', encoding: 'UTF-8')
+        waitForQualityGate(abortPipeline: true)
       }
     }
     stage('Publication') {
       steps {
-        nexusArtifactUploader artifacts: [
-          [artifactId: 'jpetstore', type: 'war', classifier: 'debug', file: 'target/jpetstore.war']
-        ],
-        nexusVersion: 'nexus3',
-        protocol: 'http',
-        nexusUrl: 'localhost:8081/',
-        groupId: 'jpetstore',
-        version: '1.0-SNAPSHOT',
-        repository: 'maven-snapshots',
-        credentialsId: 'nexus'
+        nexusArtifactUploader(artifacts: [
+                    [artifactId: 'jpetstore', type: 'war', classifier: 'debug', file: 'target/jpetstore.war']
+                  ], nexusVersion: 'nexus3', protocol: 'http', nexusUrl: 'localhost:8081/', groupId: 'jpetstore', version: '1.0-SNAPSHOT', repository: 'maven-snapshots', credentialsId: 'nexus')
+        }
       }
-      
     }
   }
-}
