@@ -13,7 +13,16 @@ pipeline {
     }
     stage('qualimetrie') {
       steps {
-        bat(script: 'runmaven.bat', encoding: 'UTF-8')
+        withSonarQubeEnv ('Sonar'){
+          bat(script: 'runqualimetrie.bat', encoding: 'UTF-8')
+        }
+      }
+    }
+    stage('quality gate') {
+      steps {
+        timeout(time: 10, unit: 'MINUTES') {
+          waitForQualityGate(abortPipeline: true)
+        }
       }
     }
     stage('Publication') {
